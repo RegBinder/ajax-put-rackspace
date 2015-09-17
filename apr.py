@@ -13,8 +13,17 @@ def parse_args():
 
     ap = argparse.ArgumentParser()
 
-    ap.add_argument('rackspace_username')
-    ap.add_argument('rackspace_API_key')
+    ap.add_argument('storage_mode')
+    ap.add_argument('--rackspace_username', help='rackspace_username', default='')
+    ap.add_argument('--rackspace_API_key', help='rackspace_API_key', default='')
+
+    ap.add_argument('--auth_endpoint', help='auth_endpoint', default='')
+    ap.add_argument('--debug', help='debug', default=False)
+    ap.add_argument('--verify_ssl', help='verify_ssl',  default=False)
+    ap.add_argument('--region', help='region',  default='RegionOne')
+    ap.add_argument('--tenant_id', help='tenant_id',  default='')
+    ap.add_argument('--username', help='username', default='')
+    ap.add_argument('--password', help='password', default='')
 
     return ap.parse_args()
 
@@ -56,14 +65,30 @@ if __name__ == '__main__':
 
     # Give credentials to pyrax.
 
-    pyrax.set_setting('identity_type',  'rackspace')
+    if 'localstorage' in args.storage_mode:
+            pyrax.set_setting('identity_type',  'keystone')
+            pyrax.set_setting('auth_endpoint', args.auth_endpoint)
+            pyrax.set_http_debug(args.debug)
+            pyrax.set_setting('verify_ssl', args.verify_ssl)
+            pyrax.set_setting('region', args.region)
+            pyrax.set_setting('tenant_id', args.tenant_id)
 
-    pyrax.set_credentials(
-        args.rackspace_username,
-        args.rackspace_API_key,
-        region="ORD")
+            pyrax.set_credentials(
+                username=args.username,
+                password=args.password
+            )
 
-    logging.info("Set settings and credentials on pyrax")
+            log.info("Set settings and credentials on pyrax for local storage")
+    else:
+            pyrax.set_setting('identity_type',  'rackspace')
+
+            pyrax.set_credentials(
+                args.rackspace_username,
+                args.rackspace_API_key,
+                region="ORD")
+
+            log.info("Set settings and credentials on pyrax")
+
 
     # Now make a container for us to upload to.
 
