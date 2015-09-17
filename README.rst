@@ -14,6 +14,8 @@ service <http://www.rackspace.com/cloud/files/>`.
 
 We don't want the upload traffic anywhere near our servers.
 
+
+
 Run the example
 ===============
 
@@ -27,6 +29,10 @@ do this stuff::
 $ git clone git@github.com:216software/ajax-put-rackspace.git
 $ cd ajax-put-rackspace
 $ python apr.py YOUR_RACKSPACE_USER_NAME YOUR_API_KEY
+
+or if you want to store to a standard swift instance
+
+$ python apr.py localstorage --auth_endpoint http://pulbic_ip:5000/v2.0 --debug True --verify_ssl False --region RegionOne --tenant_id a6e894a759294b12300e27940f0532342 --username demo --password password
 
 Now open up http://localhost:8765 and you should see something like the
 screenshot in before-upload.png
@@ -276,6 +282,12 @@ even though the async worker was blocking on IO, it was not switching to
 go back and answer other requests.
 
 I'd love to learn how to fix this, so please, help me out.
+
+
+9-15-2015 Updated to support standard SWIFT
+===============================
+
+Changed the command line
 
 .. vim: set syntax=rst:
 
